@@ -96,7 +96,7 @@ HABinarySensor pump2("pump2", "moving", false);
 HASensor pump1_state("pump1_state");
 HASensor pump2_state("pump2_state");
 HABinarySensor heater("heater", "heat", false);
-HABinarySensor light("light", "light", false);
+HASwitch light("light", false);
 HASensor tubpower("tubpower");
 
 #define MAX_SRV_CLIENTS 2
@@ -240,7 +240,11 @@ void setup() {
   //  pump2.setIcon("mdi:chart-bubble");
   heater.setName("Heater");
   //  heater.setIcon("mdi:radiator");
+  
   light.setName("Light");
+  light.setIcon("mdi:lightbulb");
+  light.onStateChanged(onLightChanged);
+  
   haTime.setName("Time");
 
   rawData.setName("Raw data");
@@ -644,6 +648,14 @@ void handleBytes(uint8_t buf[], size_t len) {
     }
     result += String(buf[i], HEX);
   }
+}
+
+void sendCommand(String command) {
+  
+}
+
+void onLightChanged(bool state, HASwitch* s) {
+  sendCommand("fb0603450e0009f6f6"); // TOOD: change to match state, don't just toggle
 }
 
 String HexString2TimeString(String hexstring){
